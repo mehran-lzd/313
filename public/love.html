@@ -685,14 +685,13 @@ function bindHeart(){
 /* Counter */
 function startCounter(){
   const el=$('#counter');
-  const labels=['Jahre','Monate','Tage','Stunden','Minuten'];
+  const labels=['Monate','Tage','Stunden','Minuten'];
   el.innerHTML=labels.map(l=>`<div class="count-cell"><div class="n" data-l="${l}">0</div><div class="l">❤ ${l}</div></div>`).join('');
   const since=new Date(CONFIG.since);
   const opts={year:'numeric',month:'long',day:'numeric'};
   $('#sinceText').textContent='Wir sind zusammen seit '+since.toLocaleDateString('de-DE',opts);
   function tick(){
     const now=new Date();
-    let y=now.getFullYear()-since.getFullYear();
     let mo=now.getMonth()-since.getMonth();
     let d=now.getDate()-since.getDate();
     let h=now.getHours()-since.getHours();
@@ -700,8 +699,7 @@ function startCounter(){
     if(mi<0){mi+=60;h--}
     if(h<0){h+=24;d--}
     if(d<0){const prev=new Date(now.getFullYear(),now.getMonth(),0);d+=prev.getDate();mo--}
-    if(mo<0){mo+=12;y--}
-    const vals={Jahre:y,Monate:mo,Tage:d,Stunden:h,Minuten:mi};
+    const vals={Monate:mo,Tage:d,Stunden:h,Minuten:mi};
     $$('.n',el).forEach(n=>n.textContent=vals[n.dataset.l]);
   }
   tick();setInterval(tick,1000*20);
