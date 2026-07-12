@@ -335,13 +335,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
    ========================================================= */
 const CONFIG = {
   // Richtige PIN (beliebig lang, wir zeigen 6 Punkte)
-  pin: "121212",
+  pin: "333333",
 
-  // Bild für das 4x4 Puzzle (Quadratisches Bild empfohlen)
-  puzzleImage: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80",
+  // Bild für das 4x4 Puzzle — LOKAL. Leg dein Bild z.B. unter
+  // public/images/puzzle.jpg ab und trag hier "/images/puzzle.jpg" ein.
+  // (Quadratisches Bild empfohlen)
+  puzzleImage: "/images/puzzle.svg",
 
   // Startdatum eurer Beziehung (YYYY-MM-DDTHH:mm)
-  since: "2022-06-14T18:30",
+  since: "2026-04-15T15:00",
 
   // Der Schreibmaschinen-Brief (jede Zeile = 1 Zeile im Brief)
   letter: [
@@ -359,19 +361,17 @@ const CONFIG = {
     "— Für immer deiner"
   ],
 
-  // Erinnerungs-Karten (Polaroids)
+  // Erinnerungs-Karten (Polaroids) — LOKALE Bilder!
+  // Leg deine Bilder unter public/images/ ab und trage nur den Pfad ein,
+  // z.B. "/images/unser-erster-tag.jpg"
   memories: [
-    { img:"https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80",
-      title:"Unser erster Tag", desc:"Der Moment, in dem alles begann." },
-    { img:"https://images.unsplash.com/photo-1502635385003-ee1e6a1a742d?auto=format&fit=crop&w=600&q=80",
-      title:"Unsere Reise", desc:"Zwei Herzen, ein Weg." },
-    { img:"https://images.unsplash.com/photo-1494774157365-9e04c6720e47?auto=format&fit=crop&w=600&q=80",
-      title:"Der Sonnenuntergang", desc:"Und ich wusste: du bist es." },
-    { img:"https://images.unsplash.com/photo-1516589091380-5d8e87df6999?auto=format&fit=crop&w=600&q=80",
-      title:"Zuhause", desc:"Wo immer du bist." },
-    { img:"https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=600&q=80",
-      title:"Lachen mit dir", desc:"Meine Lieblingsmelodie." }
+    { img:"/images/memory-1.svg", title:"Unser erster Tag", desc:"Der Moment, in dem alles begann." },
+    { img:"/images/memory-2.svg", title:"Unsere Reise",     desc:"Zwei Herzen, ein Weg." },
+    { img:"/images/memory-3.svg", title:"Der Sonnenuntergang", desc:"Und ich wusste: du bist es." },
+    { img:"/images/memory-4.svg", title:"Zuhause",          desc:"Wo immer du bist." },
+    { img:"/images/memory-5.svg", title:"Lachen mit dir",   desc:"Meine Lieblingsmelodie." }
   ],
+
 
   // Gründe warum-ich-dich-liebe (beliebig viele hinzufügen)
   reasons: [
