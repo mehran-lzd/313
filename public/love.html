@@ -544,7 +544,7 @@ function initPuzzle(){
       t.style.backgroundImage=`url('${CONFIG.puzzleImage}')`;
       t.style.backgroundSize=`${N*100}% ${N*100}%`;
       t.style.backgroundPosition=`${(c/(N-1))*100}% ${(r/(N-1))*100}%`;
-      t.addEventListener('click',()=>tryMove(tiles.indexOf(state[getIndexOfEl(t)])));
+      // Click-Handler wird zentral in bindPuzzleClicks() gesetzt (mit korrekter aktueller Position)
       wrap.appendChild(t);
       tiles.push({el:t,orig:i});
     }
