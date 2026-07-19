@@ -28,17 +28,19 @@
   --glass: rgba(255,255,255,.55);
 }
 html,body{height:100%;overflow-x:hidden;background:var(--cream);color:var(--ink);
-  font-family:'Cormorant Garamond', serif;
+  font-family:'Cormorant Garamond','Dancing Script',serif;
   scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{font-size:18px;line-height:1.55}
-h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:500;letter-spacing:.5px}
+h1,h2,h3{font-family:'Dancing Script','Cormorant Garamond',serif;font-weight:500;letter-spacing:.5px}
 .script{font-family:'Dancing Script',cursive}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 
 /* Screens */
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:24px;opacity:0;pointer-events:none;transition:opacity .8s ease;
-  background:linear-gradient(160deg,var(--cream) 0%,#ffe8ef 60%,#fff 100%);z-index:10}
+  width:100%;min-height:100dvh;padding:24px;opacity:0;pointer-events:none;transition:opacity .8s ease;
+  background:linear-gradient(160deg,var(--cream) 0%,#ffe8ef 60%,#fff 100%);z-index:10;overflow:hidden}
+.screen::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,var(--cream) 0%,#ffe8ef 60%,#fff 100%);z-index:-1}
+#s-question{position:relative;justify-content:flex-start;align-items:center;padding-top:min(16vh,110px);padding-bottom:24px;min-height:100dvh;width:100%}
 .screen.active{opacity:1;pointer-events:auto}
 .screen.behind{z-index:5}
 
@@ -51,14 +53,18 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   90%{opacity:.9}
   100%{transform:translateY(-110vh) translateX(var(--drift,20px)) rotate(360deg);opacity:0}
 }
-.sparkle{position:absolute;width:6px;height:6px;background:var(--gold-light);border-radius:50%;
-  box-shadow:0 0 10px var(--gold-light),0 0 20px #fff;animation:twinkle 2.4s ease-in-out infinite}
-@keyframes twinkle{0%,100%{transform:scale(.4);opacity:.3}50%{transform:scale(1.2);opacity:1}}
 
 /* ---- Screen 1: Start ---- */
 .hero{position:relative;text-align:center;z-index:2;max-width:520px}
 .hero h1{font-size:clamp(2.2rem,8vw,3.4rem);font-weight:500;line-height:1.15;color:var(--ink);
   animation:fadeUp 1.6s .3s both}
+.question-wrap{position:relative;max-width:420px;width:min(100%,420px);margin:0 auto;min-height:320px;padding:24px 12px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.question-wrap h2{font-size:1.6rem;margin-bottom:8px}
+.question-actions{position:relative;width:100%;min-height:220px;margin-top:28px}
+.question-btn{position:absolute;padding:14px 30px;border-radius:999px;font-size:1rem;font-weight:600;cursor:pointer;transition:left .06s ease,top .06s ease,transform .15s ease,background .2s ease;box-shadow:0 14px 30px -20px rgba(0,0,0,.18);transform-origin:center center;transform:scale(1);will-change:left,top,transform;}
+.question-btn.yes{background:#34d399;color:#065f46;left:20%;top:36px;z-index:40}
+.question-btn.no{background:#f87171;color:#7f1d1d;left:58%;top:36px;z-index:30}
+.question-btn:hover{filter:brightness(1.05)}
 .hero h1 .heart{display:inline-block;color:var(--pink-deep);animation:beat 1.4s ease-in-out infinite}
 @keyframes beat{0%,100%{transform:scale(1)}20%{transform:scale(1.25)}40%{transform:scale(.95)}60%{transform:scale(1.15)}}
 .hero .sub{margin-top:14px;font-style:italic;color:var(--rose);animation:fadeUp 1.6s .8s both}
@@ -105,13 +111,22 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   position:relative;width:min(90vw,360px);aspect-ratio:1;margin:0 auto;
   border-radius:20px;overflow:hidden;box-shadow:var(--shadow);
   background:var(--cream-2);
+  touch-action:none;
 }
 .tile{
   position:absolute;width:25%;height:25%;
   background-size:400% 400%;background-repeat:no-repeat;
   border:1px solid rgba(255,255,255,.4);
   transition:top .28s cubic-bezier(.3,.9,.3,1),left .28s cubic-bezier(.3,.9,.3,1);
-  cursor:pointer
+  cursor:grab;
+  touch-action:none;
+}
+.tile.dragging{
+  z-index:20;
+  cursor:grabbing;
+  transition:none !important;
+  transform:scale(1.05);
+  box-shadow:0 24px 40px rgba(0,0,0,.18);
 }
 .tile.empty{background:transparent;border:none;cursor:default}
 .puzzle-done{margin-top:22px;font-size:1.15rem;color:var(--pink-deep);font-style:italic;opacity:0;transform:translateY(10px);transition:all .8s}
@@ -175,39 +190,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .count-cell .n{font-size:1.9rem;font-weight:500;color:var(--pink-deep);font-family:'Cormorant Garamond',serif}
 .count-cell .l{font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;color:var(--rose);margin-top:4px}
 
-/* Stars */
-#stars-section{position:relative}
-.starfield{position:relative;width:100%;height:60vh;min-height:400px;margin-top:20px}
-.star{position:absolute;width:10px;height:10px;background:#fff;border-radius:50%;
-  box-shadow:0 0 8px #fff,0 0 16px var(--gold-light);cursor:pointer;
-  animation:twinkle 3s ease-in-out infinite;transition:transform .25s}
-.star:active{transform:scale(1.6)}
-.star-msg{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
-  background:var(--glass);backdrop-filter:blur(14px);color:#fff;padding:14px 22px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.3);opacity:0;transition:all .4s;pointer-events:none;font-style:italic;
-  max-width:90vw;text-align:center;z-index:20}
-.star-msg.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* Gift box */
-.gift{width:180px;height:180px;margin:10px auto;position:relative;cursor:pointer;transition:transform .3s}
-.gift:active{transform:scale(.95)}
-.gift .box{position:absolute;bottom:0;left:0;right:0;height:65%;
-  background:linear-gradient(135deg,#e79bb3,#c9556f);border-radius:8px;
-  box-shadow:0 20px 40px -15px rgba(201,85,111,.6)}
-.gift .lid{position:absolute;top:20%;left:-5%;right:-5%;height:22%;
-  background:linear-gradient(135deg,#f7c9d9,#e79bb3);border-radius:8px;
-  box-shadow:0 10px 20px -8px rgba(201,85,111,.6);transition:transform .8s cubic-bezier(.5,-.5,.3,1.5);z-index:2}
-.gift .ribbon-v{position:absolute;top:20%;left:calc(50% - 10px);width:20px;height:80%;
-  background:linear-gradient(180deg,#e9c976,#c9a24c);z-index:3}
-.gift .ribbon-h{position:absolute;top:calc(20% + 30%);left:0;right:0;height:20px;
-  background:linear-gradient(90deg,#e9c976,#c9a24c);z-index:1}
-.gift .bow{position:absolute;top:8%;left:50%;transform:translateX(-50%);width:60px;height:30px;
-  background:radial-gradient(circle,#e9c976,#c9a24c);border-radius:50%;z-index:4}
-.gift.open .lid{transform:translateY(-80px) rotate(-18deg)}
-.gift-msg{margin-top:26px;opacity:0;transform:translateY(10px);transition:all .8s .3s;
-  font-size:1.15rem;font-style:italic;color:var(--pink-deep);white-space:pre-line}
-.gift-msg.show{opacity:1;transform:translateY(0)}
-
 /* Finale */
 #finale{color:#fff}
 #finale h2{color:#fff}
@@ -218,7 +200,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   filter:drop-shadow(0 0 40px rgba(255,150,180,.7));
   animation:beat 1.4s ease-in-out infinite
 }
-.finale-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;line-height:1.9;white-space:pre-line;color:#fff8f0;font-style:italic;margin-top:30px}
+.finale-text{font-family:'Cormorant Garamond',serif;font-size:1.2rem;line-height:1.9;white-space:pre-line;color:#fff8f0;font-style:italic;margin-top:30px;
+  background:rgba(11,13,36,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  padding:24px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.5)}
 .forever{margin-top:28px;font-family:'Dancing Script',cursive;font-size:2.4rem;color:var(--gold-light)}
 
 /* Confetti canvas */
@@ -242,31 +227,44 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   <div class="floaters" id="floaters-1"></div>
   <div class="hero">
     <h1>Für mein ein und alles <span class="heart">❤️</span></h1>
-    <p class="sub script" style="font-size:1.5rem">eine kleine Reise nur für dich</p>
-    <button class="btn" id="startBtn">Ich liebe dich über alles ❤️</button>
+    <p class="sub script" style="font-size:1.5rem">ein kleines Geschenk nur für dich</p>
+    <button class="btn" id="startBtn">jz kommt eine wichtige frage</button>
   </div>
 </section>
 
-<!-- ============ SCREEN 2: PIN ============ -->
-<section class="screen" id="s-pin">
+<!-- ============ SCREEN 2: QUESTION ============ -->
+<section class="screen" id="s-question">
   <div class="floaters" id="floaters-2"></div>
+  <div class="question-wrap">
+    <h2>Liebst du mich?</h2>
+    <p class="hint">Drücke bitte auf Jaa, bitte bitte bitte.</p>
+    <div class="question-actions">
+      <button class="question-btn no" id="noBtn">Nein</button>
+      <button class="question-btn yes" id="yesBtn">Ja</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCREEN 3: PIN ============ -->
+<section class="screen" id="s-pin">
+  <div class="floaters" id="floaters-3"></div>
   <div class="pin-wrap">
-    <h2>Öffne dein Handy mein Schatz ❤️</h2>
-    <p class="hint">Gib deine PIN ein</p>
+    <h2>AWWW ICH LIEBE DICH AUCH BIBII</h2>
+    <p class="hint">Öffne dein Handy mein Schatz ❤️</p>
     <div class="pin-dots" id="pinDots"></div>
     <div class="keypad" id="keypad"></div>
     <p class="pin-msg" id="pinMsg">&nbsp;</p>
   </div>
 </section>
 
-<!-- ============ SCREEN 3: PUZZLE ============ -->
+<!-- ============ SCREEN 4: PUZZLE ============ -->
 <section class="screen" id="s-puzzle">
-  <div class="floaters" id="floaters-3"></div>
+  <div class="floaters" id="floaters-4"></div>
   <div class="puzzle-wrap">
     <h2>Ein kleines Rätsel</h2>
-    <p class="hint">Setze unser Bild wieder zusammen</p>
+    <p class="hint">Mach dein Bibi Bild wieder heil</p>
     <div class="puzzle" id="puzzle"></div>
-    <p class="puzzle-done" id="puzzleDone">AWW GUT GEMACHT BIBII<br>du hast unsere Erinnerung heilgemacht ❤️</p>
+    <p class="puzzle-done" id="puzzleDone">AWW GUT GEMACHT BIBII<br>du bist die aller beste ❤️</p>
     <button class="btn gold" id="memoryBtn" style="display:none">ERINNERUNGEN</button>
   </div>
 </section>
@@ -299,24 +297,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
     <div class="counter" id="counter"></div>
   </section>
 
-  <section class="section" id="stars-section">
-    <h2 style="color:#fff">Unser Sternenhimmel</h2>
-    <p style="color:#e0d7f0;font-style:italic">Jeder Stern trägt eine Erinnerung — tippe sie an</p>
-    <div class="starfield" id="starfield"></div>
-  </section>
 
-  <section class="section">
-    <h2 style="color:#fff">Eine kleine Überraschung</h2>
-    <p style="color:#e0d7f0;font-style:italic">Tippe auf das Geschenk</p>
-    <div class="gift" id="gift">
-      <div class="ribbon-h"></div>
-      <div class="box"></div>
-      <div class="ribbon-v"></div>
-      <div class="lid"></div>
-      <div class="bow"></div>
-    </div>
-    <p class="gift-msg" id="giftMsg"></p>
-  </section>
 
   <section class="section" id="finale">
     <div class="finale-heart"></div>
@@ -326,7 +307,6 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   </section>
 </main>
 
-<div class="star-msg" id="starMsg"></div>
 <canvas id="confetti"></canvas>
 
 <script>
@@ -338,75 +318,55 @@ const CONFIG = {
   pin: "333333",
 
   // Bild für das 4x4 Puzzle — LOKAL. Leg dein Bild z.B. unter
-  // public/images/puzzle.jpg ab und trag hier "/images/puzzle.jpg" ein.
+  // public/images/puzzle.jpeg ab und trag hier "./images/puzzle.jpeg" ein.
   // (Quadratisches Bild empfohlen)
-  puzzleImage: "/images/puzzle.svg",
+  puzzleImage: "./images/puzzle.jpeg",
 
   // Startdatum eurer Beziehung (YYYY-MM-DDTHH:mm)
   since: "2026-04-15T15:00",
 
   // Der Schreibmaschinen-Brief (jede Zeile = 1 Zeile im Brief)
   letter: [
-    "Meine liebste Bibi,",
+    "Meine liebste bibisare,",
     "",
     "seit du in mein Leben getreten bist,",
-    "ist jeder Tag ein kleines Wunder.",
+    "ist jeder Tag für mich mit dir einfach so besonders.",
     "",
-    "Du bist mein Zuhause,",
-    "mein Lieblingsgedanke,",
-    "mein schönstes Warum.",
+    "Ich kann ohne dich nicht mehr leben,",
+    "und deshalb muss ich dich heiraten,",
     "",
     "Danke, dass es dich gibt. ❤️",
+    "Und danke, dass du dich für mich entschieden hast. ❤️",
     "",
-    "— Für immer deiner"
+    "— Für immer dein bobi ❤️",
+    "",
+    "(Ich hoffe, mein zwei Seiten Brief hat dir gefallen, hab mir Mühe gegeben)"
   ],
 
   // Erinnerungs-Karten (Polaroids) — LOKALE Bilder!
   // Leg deine Bilder unter public/images/ ab und trage nur den Pfad ein,
-  // z.B. "/images/unser-erster-tag.jpg"
+  // z.B. "./images/unser-erster-tag.jpg"
   memories: [
-    { img:"/images/memory-1.svg", title:"Unser erster Tag", desc:"Der Moment, in dem alles begann." },
-    { img:"/images/memory-2.svg", title:"Unsere Reise",     desc:"Zwei Herzen, ein Weg." },
-    { img:"/images/memory-3.svg", title:"Der Sonnenuntergang", desc:"Und ich wusste: du bist es." },
-    { img:"/images/memory-4.svg", title:"Zuhause",          desc:"Wo immer du bist." },
-    { img:"/images/memory-5.svg", title:"Lachen mit dir",   desc:"Meine Lieblingsmelodie." }
+    { img:"./images/memory-1.jpeg", title:"Unser erstes Treffen",       desc:"Hier habe ich mich in bibi verliebt." },
+    { img:"./images/memory-2.jpeg", title:"Erstes Date als Paar",       desc:"Der Tag an dem wir zusammen gekommen sind." },
+    { img:"./images/memory-3.jpeg", title:"Unsere Reise nach Kiel",     desc:"Kleiner Einblick ins zusammen wohnen." },
+    { img:"./images/memory-4.jpeg", title:"Meine Niqabi",               desc:"Du siehst einfach unglaublich aus mit Niqab." },
+    { img:"./images/memory-5.jpeg", title:"Volleyball",                 desc:"Ich liebe Volleyball spielen mit bibi." }
   ],
 
 
   // Gründe warum-ich-dich-liebe (beliebig viele hinzufügen)
   reasons: [
-    "Weil dein Lachen meine Sonne ist.",
-    "Weil du mich verstehst, auch ohne Worte.",
+    "Weil dein Lachen mich zum glücklichsten Mann macht.",
     "Weil du mich zum besseren Menschen machst.",
-    "Weil deine Umarmungen alles heilen.",
-    "Weil du mein sicherer Hafen bist.",
-    "Weil dein Blick mein Herz zum Stolpern bringt.",
-    "Weil du meine Ruhe und mein Abenteuer bist.",
-    "Weil ich bei dir ganz ich sein darf.",
+    "Weil du dich sehr um mich sorgst.",
+    "Weil du so dankbar für die kleinsten Dinge bist.",
+    "Weil dein Blick mein Herz erobert.",
+    "Weil du alles bist, was ich brauche.",
+    "Weil ich bei dir ich selbst sein darf.",
     "Weil du mein Lieblingsmensch bist.",
-    "Weil du mich jeden Morgen zum Lächeln bringst.",
     "Weil dein Herz das schönste ist, das ich kenne.",
-    "Weil du meine Ewigkeit bist."
   ],
-
-  // Sterne — jeder ein kleiner Gruß
-  stars: [
-    "Du bist mein Lieblingsmensch.",
-    "Ich denk gerade an dich. ❤️",
-    "Für dich würd ich alles nochmal machen.",
-    "Du bist wunderschön.",
-    "Ich liebe dein Lachen.",
-    "Du bist meine Zuhause-Energie.",
-    "Mit dir schmeckt sogar Regen nach Sonne.",
-    "Ich vermiss dich, wenn du zwinkerst.",
-    "Du bist mein liebster Gedanke.",
-    "Mein Herz gehört dir. Für immer.",
-    "Danke, dass du du bist.",
-    "Ich wähl dich jeden Tag neu."
-  ],
-
-  // Nachricht in der Überraschungsbox
-  giftMessage: "Du bist das schönste Geschenk,\ndas mir das Leben je gemacht hat.\nIch liebe dich. ❤️",
 
   // Abschluss-Text
   finaleText:
@@ -414,7 +374,7 @@ const CONFIG = {
     "wie unglaublich glücklich ich bin,\n" +
     "dass es dich gibt.\n\n" +
     "Danke für jeden Moment.\n\n" +
-    "Ich liebe dich. ❤️"
+    "Ich liebe dich, Sare. ❤️"
 };
 
 /* =========================================================
@@ -442,19 +402,11 @@ function spawnFloaters(container, opts={}){
     el.style.color = ['#e79bb3','#f7c9d9','#c9a24c','#fff'][Math.floor(Math.random()*4)];
     container.appendChild(el);
   }
-  // sparkles
-  for(let i=0;i<10;i++){
-    const s = document.createElement('div');
-    s.className='sparkle';
-    s.style.left=rand(0,100)+'%';
-    s.style.top=rand(0,100)+'%';
-    s.style.animationDelay=rand(0,3)+'s';
-    container.appendChild(s);
-  }
 }
 spawnFloaters($('#floaters-1'));
 spawnFloaters($('#floaters-2'),{count:14});
 spawnFloaters($('#floaters-3'),{count:14});
+spawnFloaters($('#floaters-4'),{count:14});
 spawnFloaters($('#floaters-journey'),{count:22});
 
 /* =========================================================
@@ -471,7 +423,34 @@ function show(id){
    ========================================================= */
 $('#startBtn').addEventListener('click',()=>{
   burstHearts();
+  setTimeout(()=>show('s-question'),400);
+});
+$('#yesBtn').addEventListener('click',()=>{
   setTimeout(()=>show('s-pin'),400);
+});
+const noBtn=$('#noBtn');
+const yesBtn=$('#yesBtn');
+let yesScale=1;
+function moveNoButton(){
+  const wrap=$('.question-wrap');
+  if(!wrap||!noBtn) return;
+  const rect=wrap.getBoundingClientRect();
+  const btnRect=noBtn.getBoundingClientRect();
+  const padding=16;
+  const maxX=Math.max(0, rect.width - btnRect.width - padding * 2);
+  const maxY=Math.max(0, rect.height - btnRect.height - padding * 2);
+  const left=Math.floor(Math.random() * (maxX + 1)) + padding;
+  const top=Math.floor(Math.random() * (maxY + 1)) + padding;
+  noBtn.style.left=left+'px';
+  noBtn.style.top=top+'px';
+  yesScale=Math.min(6, yesScale+0.25);
+  yesBtn.style.transform=`scale(${yesScale})`;
+  yesBtn.style.zIndex='30';
+}
+noBtn.addEventListener('pointerenter',moveNoButton);
+noBtn.addEventListener('click',(e)=>{
+  e.preventDefault();
+  moveNoButton();
 });
 
 /* =========================================================
@@ -520,43 +499,35 @@ function handleKey(k){
    3) Puzzle 4x4 sliding
    ========================================================= */
 const N=4;
-let tiles=[]; // array of {idx: originalPos or -1 for empty, currentPos}
-let emptyPos=N*N-1;
+let tiles=[]; // array of {orig, el}
 function initPuzzle(){
   const wrap=$('#puzzle');
   wrap.innerHTML='';
-  wrap.style.backgroundImage=`url('${CONFIG.puzzleImage}')`;
-  wrap.style.backgroundSize='cover';
-  wrap.style.backgroundPosition='center';
-  // Preview underlay (faint)
+  wrap.style.backgroundImage='';
+  wrap.style.backgroundSize='';
+  wrap.style.backgroundPosition='';
   wrap.style.filter='none';
 
   tiles=[];
   for(let i=0;i<N*N;i++){
-    if(i===N*N-1){
-      const t=document.createElement('div');t.className='tile empty';t.dataset.orig=-1;wrap.appendChild(t);
-      tiles.push({el:t,orig:-1});
-    } else {
-      const t=document.createElement('div');
-      t.className='tile';
-      t.dataset.orig=i;
-      const r=Math.floor(i/N), c=i%N;
-      t.style.backgroundImage=`url('${CONFIG.puzzleImage}')`;
-      t.style.backgroundSize=`${N*100}% ${N*100}%`;
-      t.style.backgroundPosition=`${(c/(N-1))*100}% ${(r/(N-1))*100}%`;
-      // Click-Handler wird zentral in bindPuzzleClicks() gesetzt (mit korrekter aktueller Position)
-      wrap.appendChild(t);
-      tiles.push({el:t,orig:i});
-    }
+    const t=document.createElement('div');
+    t.className='tile';
+    t.dataset.orig=i;
+    const r=Math.floor(i/N), c=i%N;
+    t.style.backgroundImage=`url('${CONFIG.puzzleImage}')`;
+    t.style.backgroundSize=`${N*100}% ${N*100}%`;
+    t.style.backgroundPosition=`${(c/(N-1))*100}% ${(r/(N-1))*100}%`;
+    wrap.appendChild(t);
+    tiles.push({el:t,orig:i});
   }
   // state[pos] = tiles-array-item currently at pos
   state=tiles.slice();
-  layout();
   shufflePuzzle();
   $('#puzzleDone').classList.remove('show');
   $('#memoryBtn').style.display='none';
 }
 let state=[];
+let dragState=null;
 function getIndexOfEl(el){return state.findIndex(s=>s.el===el)}
 function layout(){
   state.forEach((s,pos)=>{
@@ -564,43 +535,93 @@ function layout(){
     s.el.style.left=(c*25)+'%';
     s.el.style.top=(r*25)+'%';
   });
-  emptyPos=state.findIndex(s=>s.orig===-1);
 }
-function tryMove(pos){
-  if(pos<0)return;
-  const er=Math.floor(emptyPos/N), ec=emptyPos%N;
-  const r=Math.floor(pos/N), c=pos%N;
-  if((Math.abs(er-r)===1&&ec===c)||(Math.abs(ec-c)===1&&er===r)){
-    [state[pos],state[emptyPos]]=[state[emptyPos],state[pos]];
-    layout();
-    checkPuzzle();
+function startDrag(tileState,pos,e){
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  e.preventDefault();
+  const el=tileState.el;
+  const wrap=$('#puzzle');
+  const wrapRect=wrap.getBoundingClientRect();
+  const rect=el.getBoundingClientRect();
+  dragState={
+    tileState,
+    pos,
+    wrapRect,
+    tileWidth:rect.width,
+    tileHeight:rect.height,
+    offsetX:e.clientX-rect.left,
+    offsetY:e.clientY-rect.top,
+    pointerId:e.pointerId,
+  };
+  try{ el.setPointerCapture(e.pointerId); } catch(_){ }
+  el.classList.add('dragging');
+  el.style.transition='none';
+  el.style.zIndex='20';
+  document.addEventListener('pointermove',handlePuzzleDrag);
+  document.addEventListener('pointerup',endPuzzleDrag);
+  document.addEventListener('pointercancel',endPuzzleDrag);
+}
+function handlePuzzleDrag(e){
+  if(!dragState||e.pointerId!==dragState.pointerId)return;
+  const {tileState,wrapRect,tileWidth,tileHeight,offsetX,offsetY}=dragState;
+  let x=e.clientX-wrapRect.left-offsetX;
+  let y=e.clientY-wrapRect.top-offsetY;
+  x=Math.min(Math.max(0,x),wrapRect.width-tileWidth);
+  y=Math.min(Math.max(0,y),wrapRect.height-tileHeight);
+  tileState.el.style.left=x+'px';
+  tileState.el.style.top=y+'px';
+}
+function endPuzzleDrag(e){
+  if(!dragState||e.pointerId!==dragState.pointerId)return;
+  const {tileState,pos,wrapRect,pointerId}=dragState;
+  const el=tileState.el;
+  if(typeof el.hasPointerCapture==='function' && el.hasPointerCapture(pointerId)){
+    el.releasePointerCapture(pointerId);
   }
+  el.style.visibility='hidden';
+  const dropEl=document.elementFromPoint(e.clientX,e.clientY);
+  el.style.visibility='';
+  if(dropEl){
+    const targetTile=dropEl.closest('.tile');
+    if(targetTile && targetTile!==el){
+      const targetIndex=state.findIndex(s=>s.el===targetTile);
+      if(targetIndex!==-1){
+        [state[pos],state[targetIndex]]=[state[targetIndex],state[pos]];
+      }
+    }
+  }
+  el.classList.remove('dragging');
+  el.style.transition='';
+  el.style.zIndex='';
+  layout();
+  checkPuzzle();
+  document.removeEventListener('pointermove',handlePuzzleDrag);
+  document.removeEventListener('pointerup',endPuzzleDrag);
+  document.removeEventListener('pointercancel',endPuzzleDrag);
+  dragState=null;
 }
-// Re-bind clicks because we replaced indices above
+// Re-bind drag handlers after shuffle
 function bindPuzzleClicks(){
   state.forEach((s,pos)=>{
-    s.el.onclick=()=>tryMove(pos);
+    s.el.onclick=null;
+    s.el.onpointerdown=(e)=>startDrag(s,pos,e);
   });
 }
 function shufflePuzzle(){
-  // Perform many random valid moves to ensure solvability
-  for(let i=0;i<400;i++){
-    const er=Math.floor(emptyPos/N), ec=emptyPos%N;
-    const neigh=[];
-    if(er>0)neigh.push(emptyPos-N);
-    if(er<N-1)neigh.push(emptyPos+N);
-    if(ec>0)neigh.push(emptyPos-1);
-    if(ec<N-1)neigh.push(emptyPos+1);
-    const pick=neigh[Math.floor(Math.random()*neigh.length)];
-    [state[pick],state[emptyPos]]=[state[emptyPos],state[pick]];
-    emptyPos=pick;
+  for(let i=state.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [state[i],state[j]]=[state[j],state[i]];
+  }
+  if(state.every((s,i)=>s.orig===i)){
+    const j=Math.floor(Math.random()*(state.length-1));
+    [state[state.length-1],state[j]]=[state[j],state[state.length-1]];
   }
   layout();
   bindPuzzleClicks();
 }
 function checkPuzzle(){
   bindPuzzleClicks();
-  const solved=state.every((s,i)=> (i===N*N-1 ? s.orig===-1 : s.orig===i));
+  const solved=state.every((s,i)=>s.orig===i);
   if(solved){
     $('#puzzleDone').classList.add('show');
     confetti(1500);
@@ -623,11 +644,9 @@ $('#memoryBtn').addEventListener('click',()=>{
 function startJourney(){
   startCounter();
   buildPolaroids();
-  buildStars();
   observePolaroids();
   observeLetter();
   bindHeart();
-  bindGift();
   bindParallax();
   $('#finaleText').textContent=CONFIG.finaleText;
 }
@@ -704,39 +723,6 @@ function startCounter(){
   }
   tick();setInterval(tick,1000*20);
   setInterval(tick,1000);
-}
-
-/* Stars */
-function buildStars(){
-  const sf=$('#starfield');
-  CONFIG.stars.forEach((msg,i)=>{
-    const s=document.createElement('div');s.className='star';
-    s.style.left=rand(2,95)+'%';
-    s.style.top=rand(2,92)+'%';
-    s.style.animationDelay=rand(0,3)+'s';
-    const size=rand(6,14);
-    s.style.width=s.style.height=size+'px';
-    s.addEventListener('click',()=>showStarMsg(msg));
-    sf.appendChild(s);
-  });
-}
-let starTimer;
-function showStarMsg(msg){
-  const el=$('#starMsg');el.textContent=msg;el.classList.add('show');
-  clearTimeout(starTimer);starTimer=setTimeout(()=>el.classList.remove('show'),2600);
-}
-
-/* Gift */
-function bindGift(){
-  const g=$('#gift'),m=$('#giftMsg');
-  m.textContent=CONFIG.giftMessage;
-  g.addEventListener('click',()=>{
-    if(g.classList.contains('open'))return;
-    g.classList.add('open');
-    burstHearts(40);
-    confetti(800);
-    setTimeout(()=>m.classList.add('show'),500);
-  });
 }
 
 /* Parallax bg darken */
